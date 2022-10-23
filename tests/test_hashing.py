@@ -4,13 +4,13 @@ from pathlib import Path
 import pytest
 from click.testing import CliRunner
 
-import my_script
+import cli
 
 
 def hello_file(tmpdir):
     test_file = Path(tmpdir, "a")
 
-    with(test_file.open("w")) as f:
+    with test_file.open("w") as f:
         f.write("Hello")
 
     yield test_file.absolute()
@@ -22,10 +22,9 @@ def runner():
 
 
 class TestHashVerification:
-
     def test_empty_directory_stdout(self, runner, tmpdir):
         command = runner.invoke(
-            my_script.calculate,
+            cli.calculate,
             [
                 str(tmpdir),
             ],
@@ -39,7 +38,7 @@ class TestHashVerification:
         storage = Path(tmpdir, "storage.json")
 
         command = runner.invoke(
-            my_script.calculate,
+            cli.calculate,
             [
                 str(tmpdir),
                 "--storage",
@@ -64,11 +63,9 @@ class TestHashVerification:
         with Path(tmpdir, file_path).open("w") as f:
             f.write(file_content)
 
-
         command = runner.invoke(
-            my_script.main,
+            cli.verify,
             [
-                "verify",
                 str(tmpdir),
             ],
             input=f"{file_path}:{expected_sum}",
@@ -88,14 +85,16 @@ class TestHashVerification:
             f.write(file_content)
 
         with Path(tmpdir, "storage.json").open("w") as f:
-            json.dump({
-                file_path: expected_sum,
-            }, f)
+            json.dump(
+                {
+                    file_path: expected_sum,
+                },
+                f,
+            )
 
         command = runner.invoke(
-            my_script.main,
+            cli.verify,
             [
-                "verify",
                 str(Path(tmpdir, "dir")),
                 "--storage",
                 str(Path(tmpdir, "storage.json")),
@@ -112,9 +111,8 @@ class TestHashVerification:
         with Path(tmpdir, file_path).open("w") as f:
             f.write(file_content)
 
-
         command = runner.invoke(
-            my_script.main,
+            cli.main,
             [
                 "verify",
                 str(tmpdir),
@@ -136,12 +134,15 @@ class TestHashVerification:
             f.write(file_content)
 
         with Path(tmpdir, "storage.json").open("w") as f:
-            json.dump({
-                file_path: expected_sum,
-            }, f)
+            json.dump(
+                {
+                    file_path: expected_sum,
+                },
+                f,
+            )
 
         command = runner.invoke(
-            my_script.main,
+            cli.main,
             [
                 "verify",
                 str(Path(tmpdir, "dir")),
