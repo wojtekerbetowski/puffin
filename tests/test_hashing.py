@@ -7,7 +7,6 @@ from click.testing import CliRunner
 import my_script
 
 
-@pytest.fixture
 def hello_file(tmpdir):
     test_file = Path(tmpdir, "a")
 
