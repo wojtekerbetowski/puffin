@@ -1,17 +1,29 @@
 import os
 import sys
-from hashlib import sha1
+import hashlib
+
+import click
 
 
+@click.group()
 def main():
-    filename = sys.argv[1]
+    pass
 
+
+@main.command()
+@click.argument("filename", type=click.Path())
+@click.argument("sum", type=str)
+@click.option("--algorithm", default="sha1", type=click.Choice(["md5", "sha1"]))
+def verify(filename, algorithm, sum):
     with open(filename, "rb") as f:
         file_content = f.read()
 
-    hashsum = sha1(file_content).hexdigest()
+    assert algorithm in hashlib.algorithms_available
 
-    print(hashsum, end="")
+    sum_algorithm = getattr(hashlib, algorithm)
+    hashsum = sum_algorithm(file_content).hexdigest()
+
+    assert hashsum == sum
 
 
 if __name__ == "__main__":
