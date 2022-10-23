@@ -1,0 +1,7 @@
+click
+numpy
+requests
+flask
+black
+pytest
+jupyter
