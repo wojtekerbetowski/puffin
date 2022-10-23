@@ -5,3 +5,5 @@ flask
 black
 pytest
 jupyter
+pandas
+matplotlib

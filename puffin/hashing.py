@@ -1,5 +1,8 @@
+import functools
 import hashlib
 import typing
+
+from puffin import timer
 
 
 def hashing_algorithm(
@@ -9,6 +12,8 @@ def hashing_algorithm(
 
     sum_algorithm = getattr(hashlib, algorithm)
 
+    @timer.timer
+    @functools.wraps(sum_algorithm)
     def hash_bytes(bs):
         return sum_algorithm(bs).hexdigest()
 
